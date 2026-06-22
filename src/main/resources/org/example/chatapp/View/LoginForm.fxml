@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.chatapp.Controller.LoginController">
+   <children>
+      <Button layoutX="260.0" layoutY="223.0" mnemonicParsing="false" onAction="#loginOnAction" text="Log In" />
+      <PasswordField fx:id="logpswd" layoutX="211.0" layoutY="187.0" promptText="Password" />
+      <TextField fx:id="logUname" layoutX="211.0" layoutY="149.0" promptText="User Name" />
+      <Button layoutX="489.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHomeOnAction" text="Back" />
+   </children>
+</AnchorPane>
