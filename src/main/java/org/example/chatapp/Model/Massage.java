@@ -7,8 +7,30 @@ public class Massage implements Serializable {
     private String sender;
     private String receiver;
     private String massage;
+    private Type type;
     private LocalDateTime timestamp;
-    public enum type{CHAT,LOGIN,LOGOUT,PRIVATE}
+
+    public enum Type{CHAT,LOGIN,LOGOUT,PRIVATE,USER_LIST}
+
+    public Massage() {
+    }
+
+    public Massage(String sender, String receiver, String massage, Type type, LocalDateTime timestamp) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.massage = massage;
+        this.type = type;
+        this.timestamp = timestamp;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
 
     public String getSender() {
         return sender;
