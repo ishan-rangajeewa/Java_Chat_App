@@ -9,14 +9,19 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.chatapp.DataBase.UserData;
 import org.example.chatapp.Model.User;
+import org.example.chatapp.Service.ChatClientService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class LoginController {
 
     public PasswordField logpswd;
     public TextField logUname;
+    private ChatClientService chatClientService;
+
+    public void initialize(){
+        chatClientService = ChatClientService.getInstance();
+    }
 
     public void loginOnAction(ActionEvent actionEvent) {
         String password = logpswd.getText();
@@ -25,6 +30,8 @@ public class LoginController {
         boolean isvalidate = userData.UserLoginValidate(userName,password);
         if(isvalidate){
             //goto chat interface
+             navigateToChat(actionEvent,new User(userName,userName,password));
+
         }
         else{
             //send error massage to label
@@ -44,6 +51,23 @@ public class LoginController {
         currentStage.setScene(loginScene);
         currentStage.setTitle("welcome");
         currentStage.show();
+    }
+
+    private void navigateToChat(ActionEvent event, User user){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/chatapp/View/chatView.fxml"));
+        try {
+            Scene scene = new Scene(fxmlLoader.load());
+            ChatController chatController = fxmlLoader.getController();
+            chatController.setCurrentUser(user);
+
+            Stage stage = (Stage) logUname.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("chat - "+user.getUserName());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 
