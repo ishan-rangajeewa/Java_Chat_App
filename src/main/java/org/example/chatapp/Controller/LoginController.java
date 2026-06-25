@@ -8,10 +8,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.chatapp.DataBase.UserData;
+import org.example.chatapp.Model.Massage;
 import org.example.chatapp.Model.User;
 import org.example.chatapp.Service.ChatClientService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class LoginController {
 
@@ -30,7 +32,13 @@ public class LoginController {
         boolean isvalidate = userData.UserLoginValidate(userName,password);
         if(isvalidate){
             //goto chat interface
-             navigateToChat(actionEvent,new User(userName,userName,password));
+            boolean connected = chatClientService.connect();
+            if(connected){
+                Massage massage = new Massage(userName,"","", Massage.Type.LOGIN, LocalDateTime.now());
+                chatClientService.sendMessage(massage);
+                navigateToChat(actionEvent,new User(userName,userName,password));
+            }
+
 
         }
         else{
@@ -59,6 +67,10 @@ public class LoginController {
             Scene scene = new Scene(fxmlLoader.load());
             ChatController chatController = fxmlLoader.getController();
             chatController.setCurrentUser(user);
+
+            Massage loginMsg = new Massage(
+                    logUname.getText(),"","",Massage.Type.LOGIN,LocalDateTime.now());
+            chatClientService.sendMessage(loginMsg);
 
             Stage stage = (Stage) logUname.getScene().getWindow();
             stage.setScene(scene);

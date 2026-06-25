@@ -12,7 +12,7 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream input;
     private ObjectOutputStream output;
     private String userName;
-    private boolean isruning;
+    private boolean isruning = true;
 
     public ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -21,8 +21,9 @@ public class ClientHandler implements Runnable {
     public void run() {
 
         try {
-            input = new ObjectInputStream(clientSocket.getInputStream());
             output = new ObjectOutputStream(clientSocket.getOutputStream());
+            output.flush();
+            input = new ObjectInputStream(clientSocket.getInputStream());
 
             while (isruning) {
                 Massage massage = (Massage) input.readObject();
@@ -57,6 +58,8 @@ public class ClientHandler implements Runnable {
         Massage leave = new Massage(
                 "SERVER","",userName+" Left",Massage.Type.LOGOUT,LocalDateTime.now());
         ChatServer.getInstance().broadcast(leave);
+        //sendUserListForAll();
+        sendUserList();
     }
 
     private void handlePrivate(Massage massage) {
@@ -77,9 +80,11 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendUserList() {
+        String userList = String.join(",",ChatServer.getInstance().getOnlineUsers());
         Massage massage = new Massage("SERVER","","", Massage.Type.USER_LIST,null);
-        massage.setMassage(String.join(",",ChatServer.getInstance().getOnlineUsers()));
-        sendMssege(massage);
+//        massage.setMassage(String.join(",",ChatServer.getInstance().getOnlineUsers()));
+//        sendMssege(massage);
+        ChatServer.getInstance().broadcast(massage);
     }
 
     public void sendMssege(Massage massage) {
@@ -99,7 +104,7 @@ public class ClientHandler implements Runnable {
         ChatServer.getInstance().removeClient(this);
         if (userName != null) {
             Massage leaveMsg = new Massage(
-                    "Server","",userName+"Disconected",Massage.Type.CHAT,LocalDateTime.now());
+                    "Server","",userName+" Disconected",Massage.Type.CHAT,LocalDateTime.now());
             ChatServer.getInstance().broadcast(leaveMsg);
         }
         if (clientSocket != null) {

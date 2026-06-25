@@ -74,6 +74,7 @@ public class ChatServer {
                 users.add(client.getUserName());
             }
         }
+        System.out.println("Online Users " +  users);
         return users;
     }
 

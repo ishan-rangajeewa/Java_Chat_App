@@ -19,8 +19,14 @@ public class ChatClientService {
     private Consumer<Massage> massageListener;
 
     private static ChatClientService instance;
+
     private ChatClientService() {}
-    public static ChatClientService getInstance() {
+
+    public void Initialize() {
+
+    }
+
+    public static synchronized ChatClientService getInstance() {
         if (instance == null) {
             instance = new ChatClientService();
         }
@@ -28,7 +34,7 @@ public class ChatClientService {
     }
     public boolean connect() {
         try {
-            socket = new Socket("127.0.0.0",serverPort);
+            socket = new Socket("127.0.0.1",serverPort);
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
             isConnected = true;

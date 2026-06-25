@@ -1,7 +1,9 @@
 package org.example.chatapp.Controller;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -13,7 +15,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
-public class ChatController {
+public class ChatController implements Initializable {
     public ListView<String> listMessages;
     public ListView<String> listUsers;
     public TextField txtMessage;
@@ -47,9 +49,10 @@ public class ChatController {
         chatClientService.sendMessage(massage);
 
 
-        listMessages.getItems().add(content);
+        //listMessages.getItems().add(content);
         txtMessage.clear();
     }
+    @FXML
     protected void onLogoutClick(){
         Massage massage = new Massage(
                 currentUser.getUserName(),"","", Massage.Type.LOGOUT,LocalDateTime.now());
@@ -64,7 +67,10 @@ public class ChatController {
         Platform.runLater(() -> {
            switch (massage.getType()){
                case CHAT:
-                   listMessages.getItems().add(massage.getSender()+" : " +massage.getMassage());
+                   //listMessages.getItems().add(massage.getSender()+" : " +massage.getMassage());
+                   String disply = massage.getSender().equals(currentUser.getUserName())
+                           ? "You: "+massage.getMassage() : massage.getSender()+" : "+massage.getMassage();
+                   listMessages.getItems().add(disply);
                    break;
                case USER_LIST:
                    updateUserList(massage.getMassage());
@@ -74,12 +80,15 @@ public class ChatController {
     }
 
     private void updateUserList(String massage) {
+        System.out.println("user list called "+massage);
         listUsers.getItems().clear();
         if (!massage.isEmpty()){
             String[] users = massage.split(",");
             for (String user : users){
+                System.out.println("user "+user);
                 listUsers.getItems().add(user);
             }
         }
     }
+
 }
