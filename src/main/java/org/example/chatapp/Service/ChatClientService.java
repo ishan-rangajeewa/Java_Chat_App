@@ -55,10 +55,9 @@ public class ChatClientService {
                 if(massageListener != null) {
                     Platform.runLater(() -> massageListener.accept(massage));
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+            } catch (IOException | ClassNotFoundException  e) {
+                isConnected = false;
+                break;
             }
         }
     }
@@ -86,7 +85,7 @@ public class ChatClientService {
         isConnected = false;
         try {
             if (socket != null) socket.close();
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
     }

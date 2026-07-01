@@ -57,8 +57,8 @@ public class ClientHandler implements Runnable {
         isruning = false;
         Massage leave = new Massage(
                 "SERVER","",userName+" Left",Massage.Type.LOGOUT,LocalDateTime.now());
-        ChatServer.getInstance().broadcast(leave);
-        //sendUserListForAll();
+//        ChatServer.getInstance().broadcast(leave);
+//        sendUserListForAll();
         sendUserList();
     }
 
@@ -81,8 +81,8 @@ public class ClientHandler implements Runnable {
 
     private void sendUserList() {
         String userList = String.join(",",ChatServer.getInstance().getOnlineUsers());
-        Massage massage = new Massage("SERVER","","", Massage.Type.USER_LIST,null);
-//        massage.setMassage(String.join(",",ChatServer.getInstance().getOnlineUsers()));
+        Massage massage = new Massage("SERVER",userList,"", Massage.Type.USER_LIST,null);
+        massage.setMassage(String.join(",",ChatServer.getInstance().getOnlineUsers()));
 //        sendMssege(massage);
         ChatServer.getInstance().broadcast(massage);
     }

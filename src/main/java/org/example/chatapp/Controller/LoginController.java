@@ -34,8 +34,8 @@ public class LoginController {
             //goto chat interface
             boolean connected = chatClientService.connect();
             if(connected){
-                Massage massage = new Massage(userName,"","", Massage.Type.LOGIN, LocalDateTime.now());
-                chatClientService.sendMessage(massage);
+//                Massage massage = new Massage(userName,"","", Massage.Type.LOGIN, LocalDateTime.now());
+//                chatClientService.sendMessage(massage);
                 navigateToChat(actionEvent,new User(userName,userName,password));
             }
 
