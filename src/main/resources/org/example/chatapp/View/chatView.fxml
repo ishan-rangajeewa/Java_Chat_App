@@ -3,12 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.chatapp.Controller.ChatController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #636363;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.chatapp.Controller.ChatController">
    <children>
       <Label fx:id="lblCurrentUser" layoutX="39.0" layoutY="16.0" />
       <ListView fx:id="listMessages" layoutX="14.0" layoutY="45.0" prefHeight="287.0" prefWidth="362.0" />
       <ListView fx:id="listUsers" layoutX="386.0" layoutY="16.0" prefHeight="368.0" prefWidth="200.0" />
       <TextField fx:id="txtMessage" layoutX="14.0" layoutY="346.0" prefHeight="26.0" prefWidth="247.0" />
-      <Button layoutX="274.0" layoutY="347.0" mnemonicParsing="false" onAction="#onSendClick" text="Send" />
+      <Button layoutX="274.0" layoutY="347.0" mnemonicParsing="false" onAction="#onSendClick" style="-fx-background-color: green;" text="Send" textAlignment="CENTER" textFill="WHITE" />
    </children>
 </AnchorPane>

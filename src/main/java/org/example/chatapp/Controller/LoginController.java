@@ -4,11 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.chatapp.DataBase.UserData;
-import org.example.chatapp.Model.Massage;
+import org.example.chatapp.Model.Message;
 import org.example.chatapp.Model.User;
 import org.example.chatapp.Service.ChatClientService;
 
@@ -19,6 +20,7 @@ public class LoginController {
 
     public PasswordField logpswd;
     public TextField logUname;
+    public Label lblError;
     private ChatClientService chatClientService;
 
     public void initialize(){
@@ -38,10 +40,16 @@ public class LoginController {
 //                chatClientService.sendMessage(massage);
                 navigateToChat(actionEvent,new User(userName,userName,password));
             }
+            else{
+                lblError.setStyle("-fx-text-fill: red");
+                lblError.setText("Server Error");
+            }
 
 
         }
         else{
+            lblError.setStyle("-fx-text-fill: red");
+            lblError.setText("Invalid Username or Password");
             //send error massage to label
         }
     }
@@ -68,8 +76,8 @@ public class LoginController {
             ChatController chatController = fxmlLoader.getController();
             chatController.setCurrentUser(user);
 
-            Massage loginMsg = new Massage(
-                    logUname.getText(),"","",Massage.Type.LOGIN,LocalDateTime.now());
+            Message loginMsg = new Message(
+                    logUname.getText(),"","",Message.Type.LOGIN,LocalDateTime.now());
             chatClientService.sendMessage(loginMsg);
 
             Stage stage = (Stage) logUname.getScene().getWindow();
@@ -82,5 +90,18 @@ public class LoginController {
 
     }
 
+    public void gotoRgster(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/chatapp/View/RegisterForm.fxml"));
+        Scene loginScene = null;
+        try {
+            loginScene = new Scene(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        currentStage.setScene(loginScene);
+        currentStage.setTitle("New User Register");
+        currentStage.show();
+    }
 }

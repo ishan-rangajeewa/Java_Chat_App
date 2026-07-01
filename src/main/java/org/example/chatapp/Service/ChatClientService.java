@@ -1,7 +1,7 @@
 package org.example.chatapp.Service;
 
 import javafx.application.Platform;
-import org.example.chatapp.Model.Massage;
+import org.example.chatapp.Model.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,7 +16,7 @@ public class ChatClientService {
     private final int serverPort = 5000;
     private boolean isConnected = false;
 
-    private Consumer<Massage> massageListener;
+    private Consumer<Message> messageListener;
 
     private static ChatClientService instance;
 
@@ -50,10 +50,10 @@ public class ChatClientService {
     private void listenForMessages() {
         while (isConnected) {
             try {
-                Massage massage =(Massage) input.readObject();
+                Message message =(Message) input.readObject();
 
-                if(massageListener != null) {
-                    Platform.runLater(() -> massageListener.accept(massage));
+                if(messageListener != null) {
+                    Platform.runLater(() -> messageListener.accept(message));
                 }
             } catch (IOException | ClassNotFoundException  e) {
                 isConnected = false;
@@ -63,18 +63,18 @@ public class ChatClientService {
     }
 
 
-    public void sendMessage(Massage massage) {
+    public void sendMessage(Message message) {
         if(isConnected && output!=null) {
             try {
-                output.writeObject(massage);
+                output.writeObject(message);
                 output.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    public void setMessageListener(Consumer<Massage> listener) {
-        this.massageListener = listener;
+    public void setMessageListener(Consumer<Message> listener) {
+        this.messageListener = listener;
     }
 
     public boolean isConnected() {

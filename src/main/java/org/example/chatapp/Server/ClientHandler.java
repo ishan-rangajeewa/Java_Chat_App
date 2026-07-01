@@ -1,5 +1,5 @@
 package org.example.chatapp.Server;
-import org.example.chatapp.Model.Massage;
+import org.example.chatapp.Model.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,8 +26,8 @@ public class ClientHandler implements Runnable {
             input = new ObjectInputStream(clientSocket.getInputStream());
 
             while (isruning) {
-                Massage massage = (Massage) input.readObject();
-                handleMessage(massage);
+                Message message = (Message) input.readObject();
+                handleMessage(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -36,60 +36,60 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleMessage(Massage massage) {
-        switch (massage.getType()) {
+    private void handleMessage(Message message) {
+        switch (message.getType()) {
             case LOGIN:
-                handleLogin(massage);
+                handleLogin(message);
                 break;
             case LOGOUT:
-                handleLogout(massage);
+                handleLogout(message);
                 break;
             case CHAT:
-                handleChat(massage);
+                handleChat(message);
                 break;
             case PRIVATE:
-                handlePrivate(massage);
+                handlePrivate(message);
                 break;
         }
     }
 
-    private void handleLogout(Massage massage) {
+    private void handleLogout(Message massage) {
         isruning = false;
-        Massage leave = new Massage(
-                "SERVER","",userName+" Left",Massage.Type.LOGOUT,LocalDateTime.now());
+        Message leave = new Message(
+                "SERVER","",userName+" Left",Message.Type.LOGOUT,LocalDateTime.now());
 //        ChatServer.getInstance().broadcast(leave);
 //        sendUserListForAll();
         sendUserList();
     }
 
-    private void handlePrivate(Massage massage) {
-        ChatServer.getInstance().sendtoUser(massage.getReceiver(),massage);
+    private void handlePrivate(Message message) {
+        ChatServer.getInstance().sendtoUser(message.getReceiver(),message);
     }
 
-    private void handleChat(Massage massage) {
-        ChatServer.getInstance().broadcast(massage);
+    private void handleChat(Message message) {
+        ChatServer.getInstance().broadcast(message);
     }
 
-    private void handleLogin(Massage massage) {
-        this.userName = massage.getSender();
+    private void handleLogin(Message message) {
+        this.userName = message.getSender();
         System.out.println("Client " + userName + " logged in");
-        Massage joinMassage = new Massage(
-                "Server","Client",userName+" Joined Chat", Massage.Type.CHAT, LocalDateTime.now());
+        Message joinMassage = new Message(
+                "Server","Client",userName+" Joined Chat", Message.Type.CHAT, LocalDateTime.now());
         ChatServer.getInstance().broadcast(joinMassage);
         sendUserList();
     }
 
     private void sendUserList() {
         String userList = String.join(",",ChatServer.getInstance().getOnlineUsers());
-        Massage massage = new Massage("SERVER",userList,"", Massage.Type.USER_LIST,null);
-        massage.setMassage(String.join(",",ChatServer.getInstance().getOnlineUsers()));
+        Message message = new Message("SERVER",userList,"", Message.Type.USER_LIST,null);
+        message.setMassage(String.join(",",ChatServer.getInstance().getOnlineUsers()));
 //        sendMssege(massage);
-        ChatServer.getInstance().broadcast(massage);
+        ChatServer.getInstance().broadcast(message);
     }
 
-    public void sendMssege(Massage massage) {
+    public void sendMssege(Message message) {
         try {
-            output.writeObject(massage);
+            output.writeObject(message);
             output.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,8 +103,8 @@ public class ClientHandler implements Runnable {
     private void disconect() {
         ChatServer.getInstance().removeClient(this);
         if (userName != null) {
-            Massage leaveMsg = new Massage(
-                    "Server","",userName+" Disconected",Massage.Type.CHAT,LocalDateTime.now());
+            Message leaveMsg = new Message(
+                    "Server","",userName+" Disconected",Message.Type.CHAT,LocalDateTime.now());
             ChatServer.getInstance().broadcast(leaveMsg);
         }
         if (clientSocket != null) {

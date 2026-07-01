@@ -2,15 +2,22 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.chatapp.Controller.RegisterController">
    <children>
-      <Button layoutX="254.0" layoutY="237.0" mnemonicParsing="false" onAction="#registerOnAction" text="Register" />
-      <Button layoutX="523.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHomeAction" text="Back" />
-      <PasswordField fx:id="regRepswd" layoutX="212.0" layoutY="200.0" promptText="Re-Enter Password" />
-      <PasswordField fx:id="regPswd" layoutX="213.0" layoutY="164.0" promptText="Password" />
-      <TextField fx:id="regUserName" layoutX="212.0" layoutY="130.0" promptText="User Name" />
-      <TextField fx:id="regName" layoutX="212.0" layoutY="97.0" promptText="Name" />
-      <Label fx:id="regError" layoutX="214.0" layoutY="71.0" prefHeight="18.0" prefWidth="150.0" textFill="RED" />
+      <Button layoutX="257.0" layoutY="261.0" mnemonicParsing="false" onAction="#registerOnAction" style="-fx-background-color: green;" text="Register" textFill="WHITE" />
+      <Button layoutX="523.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHomeAction" style="-fx-background-color: black;" text="Back" textFill="#f7f7f7" />
+      <PasswordField fx:id="regRepswd" layoutX="212.0" layoutY="200.0" prefHeight="26.0" prefWidth="211.0" promptText="Re-Enter Password" />
+      <PasswordField fx:id="regPswd" layoutX="213.0" layoutY="164.0" prefHeight="26.0" prefWidth="211.0" promptText="Password" />
+      <TextField fx:id="regUserName" layoutX="212.0" layoutY="130.0" prefHeight="26.0" prefWidth="211.0" promptText="User Name" />
+      <TextField fx:id="regName" layoutX="212.0" layoutY="97.0" prefHeight="26.0" prefWidth="211.0" promptText="Name" />
+      <Label fx:id="regError" layoutX="214.0" layoutY="71.0" prefHeight="18.0" prefWidth="150.0" />
+      <Label layoutX="29.0" layoutY="18.0" prefHeight="18.0" prefWidth="240.0" text="Register Form">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Hyperlink layoutX="212.0" layoutY="228.0" onAction="#backtoLgin" text="If You already Have a Account" />
    </children>
 </AnchorPane>

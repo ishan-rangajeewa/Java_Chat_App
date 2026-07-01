@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import org.example.chatapp.Model.Massage;
+import org.example.chatapp.Model.Message;
 import org.example.chatapp.Model.User;
 import org.example.chatapp.Service.ChatClientService;
 
@@ -44,9 +44,9 @@ public class ChatController implements Initializable {
         if (content.isEmpty()){
             return;
         }
-        Massage  massage = new Massage(
-                currentUser.getUserName(),"",content, Massage.Type.CHAT, LocalDateTime.now());
-        chatClientService.sendMessage(massage);
+        Message  message = new Message(
+                currentUser.getUserName(),"",content, Message.Type.CHAT, LocalDateTime.now());
+        chatClientService.sendMessage(message);
 
 
         //listMessages.getItems().add(content);
@@ -54,9 +54,9 @@ public class ChatController implements Initializable {
     }
     @FXML
     protected void onLogoutClick(){
-        Massage massage = new Massage(
-                currentUser.getUserName(),"","", Massage.Type.LOGOUT,LocalDateTime.now());
-        chatClientService.sendMessage(massage);
+        Message message = new Message(
+                currentUser.getUserName(),"","", Message.Type.LOGOUT,LocalDateTime.now());
+        chatClientService.sendMessage(message);
         chatClientService.disconnect();
 
         //navigate to login ui

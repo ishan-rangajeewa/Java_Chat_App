@@ -32,12 +32,17 @@ public class RegisterController {
                 User user = new User(name,userName,password);
                 userData.saveUser(user);
                 System.out.println("User created");
+                regError.setStyle("-fx-border-color: green;");
+                regError.setText("User created");
+
             }
             else{
+                regError.setStyle("-fx-border-color: red;");
                 regError.setText("Passwords are Not Match");
             }
         }
         else{
+            regError.setStyle("-fx-border-color: red;");
             regError.setText("Fill the all fields");
         }
     }
@@ -55,5 +60,18 @@ public class RegisterController {
         currentStage.setScene(loginScene);
         currentStage.setTitle("welcome");
         currentStage.show();
+    }
+
+    public void backtoLgin(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/chatapp/View/LoginForm.fxml"));
+        Scene loginScene = null;
+        try {
+            loginScene = new Scene(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        currentStage.setScene(loginScene);
+        currentStage.setTitle("Log in");
     }
 }

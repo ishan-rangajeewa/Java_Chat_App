@@ -3,7 +3,7 @@ package org.example.chatapp.Model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Massage implements Serializable {
+public class Message implements Serializable {
     private String sender;
     private String receiver;
     private String massage;
@@ -12,10 +12,10 @@ public class Massage implements Serializable {
 
     public enum Type{CHAT,LOGIN,LOGOUT,PRIVATE,USER_LIST}
 
-    public Massage() {
+    public Message() {
     }
 
-    public Massage(String sender, String receiver, String massage, Type type, LocalDateTime timestamp) {
+    public Message(String sender, String receiver, String massage, Type type, LocalDateTime timestamp) {
         this.sender = sender;
         this.receiver = receiver;
         this.massage = massage;

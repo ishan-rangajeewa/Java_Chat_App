@@ -1,6 +1,6 @@
 package org.example.chatapp.Server;
 
-import org.example.chatapp.Model.Massage;
+import org.example.chatapp.Model.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -50,12 +50,12 @@ public class ChatServer {
         }
 
         }
-    public void broadcast(Massage massage){
+    public void broadcast(Message message){
         for(ClientHandler client : clients){
-            client.sendMssege(massage);
+            client.sendMssege(message);
         }
     }
-    public void sendtoUser(String username, Massage message){
+    public void sendtoUser(String username, Message message){
         for(ClientHandler client : clients){
             if(client.getUserName() != null && client.getUserName().equals(username)){
                 client.sendMssege(message);
