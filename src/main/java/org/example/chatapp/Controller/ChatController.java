@@ -63,7 +63,7 @@ public class ChatController implements Initializable {
 
     }
 
-    private void handleIncomingMessage(Massage massage) {
+    private void handleIncomingMessage(Message massage) {
         Platform.runLater(() -> {
            switch (massage.getType()){
                case CHAT:
