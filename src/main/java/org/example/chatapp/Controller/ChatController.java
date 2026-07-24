@@ -1,6 +1,8 @@
 package org.example.chatapp.Controller;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +15,8 @@ import org.example.chatapp.Service.ChatClientService;
 
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ChatController implements Initializable {
@@ -22,10 +26,29 @@ public class ChatController implements Initializable {
     public Label lblCurrentUser;
 
     private User currentUser;
+    private String selectedUser = "";
     private ChatClientService chatClientService;
+    private static String group = "group";
+    private  Map<String, ObservableList<String>> conversations = new HashMap<>();
 
     public void initialize(URL url, ResourceBundle rb) {
         chatClientService = ChatClientService.getInstance();
+
+        conversations.put(group, FXCollections.observableArrayList());
+        listMessages.setItems(conversations.get(group));
+
+        listUsers.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+           if (newValue != null) {
+               openConversationWith(newValue);
+           }
+        });
+
+    }
+
+    private void openConversationWith(String UserName) {
+        selectedUser = UserName;
+        conversations.putIfAbsent(UserName, FXCollections.observableArrayList());
+        listMessages.setItems(conversations.get(UserName));
     }
 
     public void setCurrentUser(User currentUser) {
@@ -44,10 +67,21 @@ public class ChatController implements Initializable {
         if (content.isEmpty()){
             return;
         }
-        Message  message = new Message(
-                currentUser.getUserName(),"",content, Message.Type.CHAT, LocalDateTime.now());
-        chatClientService.sendMessage(message);
-
+        System.out.println("Selected User: " + selectedUser);
+        System.out.println("Current User: " + currentUser.getUserName());
+        if(!(selectedUser.isEmpty())){
+            Message  message = new Message(
+                    currentUser.getUserName(),selectedUser,content, Message.Type.PRIVATE, LocalDateTime.now());
+            chatClientService.sendMessage(message);
+            conversations.get(selectedUser).add("You: "+content);
+        }
+        else{
+            Message message = new Message(
+                 currentUser.getUserName(),"",content, Message.Type.CHAT, LocalDateTime.now()
+            );
+            chatClientService.sendMessage(message);
+            conversations.get(group).add("You: "+content);
+        }
 
         //listMessages.getItems().add(content);
         txtMessage.clear();
@@ -63,31 +97,45 @@ public class ChatController implements Initializable {
 
     }
 
-    private void handleIncomingMessage(Message massage) {
+    private void handleIncomingMessage(Message message) {
         Platform.runLater(() -> {
-           switch (massage.getType()){
+           switch (message.getType()){
                case CHAT:
-                   //listMessages.getItems().add(massage.getSender()+" : " +massage.getMassage());
-                   String disply = massage.getSender().equals(currentUser.getUserName())
-                           ? "You: "+massage.getMassage() : massage.getSender()+" : "+massage.getMassage();
-                   listMessages.getItems().add(disply);
+                   String display = message.getSender().equals(currentUser.getUserName())
+                           ? "You: " + message.getMassage() : message.getSender()+ " : "+message.getMassage();
+                   conversations.get(group).add(display);
+                   break;
+               case PRIVATE:
+                   String partner = message.getSender().equals(currentUser.getUserName())
+                           ? message.getReceiver() : message.getSender();
+                   conversations.putIfAbsent(partner, FXCollections.observableArrayList());
+                   String privateDisplay = message.getSender().equals(currentUser.getUserName())
+                           ? "You: " + message.getMassage() : message.getSender() + " : "+message.getMassage();
+                   conversations.get(partner).add(privateDisplay);
+
                    break;
                case USER_LIST:
-                   updateUserList(massage.getMassage());
+                   updateUserList(message.getMassage());
                    break;
            }
         });
     }
 
-    private void updateUserList(String massage) {
-        System.out.println("user list called "+massage);
+    private void updateUserList(String message) {
+        System.out.println("user list called "+message);
+        String previouslySelected = listUsers.getSelectionModel().getSelectedItem();
         listUsers.getItems().clear();
-        if (!massage.isEmpty()){
-            String[] users = massage.split(",");
+        if(!message.isEmpty()){
+            String[] users = message.split(",");
             for (String user : users){
-                System.out.println("user "+user);
+                if(currentUser != null && user.equals(currentUser.getUserName())){
+                    continue;
+                }
                 listUsers.getItems().add(user);
             }
+        }
+        if(previouslySelected != null && listUsers.getItems().contains(previouslySelected)){
+            listUsers.getSelectionModel().select(previouslySelected);
         }
     }
 
