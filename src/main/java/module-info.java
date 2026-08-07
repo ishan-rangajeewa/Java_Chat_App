@@ -1,6 +1,10 @@
 module org.example.chatapp {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
+    requires org.xerial.sqlitejdbc;
+    requires jbcrypt;
+    requires java.desktop;
 
 
     opens org.example.chatapp to javafx.fxml;

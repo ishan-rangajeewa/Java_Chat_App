@@ -13,7 +13,7 @@ public class ChatClientService {
     private Socket socket;
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    private final int serverPort = 5000;
+    private final int serverPort = 5010;
     private boolean isConnected = false;
 
     private Consumer<Message> messageListener;
@@ -22,9 +22,7 @@ public class ChatClientService {
 
     private ChatClientService() {}
 
-    public void Initialize() {
 
-    }
 
     public static synchronized ChatClientService getInstance() {
         if (instance == null) {

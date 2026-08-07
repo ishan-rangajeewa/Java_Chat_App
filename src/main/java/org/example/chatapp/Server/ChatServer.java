@@ -1,10 +1,17 @@
 package org.example.chatapp.Server;
 
+import org.example.chatapp.DataBase.DBConnection;
 import org.example.chatapp.Model.Message;
+import org.sqlite.core.DB;
+
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ChatServer {
     private boolean isRun = false;
     private ServerSocket serverSocket;
-    private final int port = 5000;
+    private final int port = 5010;
     private final List<ClientHandler> clients;
 
     private static ChatServer instance;
@@ -24,16 +31,20 @@ public class ChatServer {
         if(instance == null){
             instance = new ChatServer();
         }
+
+
         return instance;
     }
     public void startServer(){
         try {
             serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
+            System.out.println("1   Server started");
+        } catch (IOException e ) {
             throw new RuntimeException(e);
         }
         isRun = true;
         System.out.println("Server Started");
+        DBConfig();
 
         while(isRun){
             Socket clientScoket = null;
@@ -87,6 +98,36 @@ public class ChatServer {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+    private void DBConfig(){
+        final  String URL = "jdbc:sqlite:chat.db";
+
+        String createUser = """
+                CREATE TABLE IF NOT EXISTS users(
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                name TEXT  NOT NULL,
+                                username TEXT UNIQUE,
+                                password_hash TEXT
+                            );
+                """;
+        String createMessage = """
+                CREATE TABLE IF NOT EXISTS  message(
+                    id  INTEGER PRIMARY KEY AUTOINCREMENT,
+                    sender TEXT ,
+                    receiver TEXT ,
+                    message TEXT,
+                    timestamp INTEGER DEFAULT (strftime('%s', 'now'))
+                );
+                """;
+
+        try(Connection con =  DriverManager.getConnection(URL);
+            Statement statement = con.createStatement()){
+            statement.execute(createUser);
+            statement.execute(createMessage);
+            System.out.println("DB created");
+        }catch (SQLException e){
+            e.printStackTrace();
         }
     }
     public static void main(String[] args) {

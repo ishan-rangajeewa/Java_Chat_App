@@ -8,12 +8,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.example.chatapp.DataBase.DBConnection;
 import org.example.chatapp.DataBase.UserData;
 import org.example.chatapp.Model.Message;
 import org.example.chatapp.Model.User;
 import org.example.chatapp.Service.ChatClientService;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class LoginController {
@@ -22,16 +28,33 @@ public class LoginController {
     public TextField logUname;
     public Label lblError;
     private ChatClientService chatClientService;
+    private String storedPassword = "";
 
-    public void initialize(){
+    public void initialize() throws SQLException, ClassNotFoundException {
         chatClientService = ChatClientService.getInstance();
+
     }
 
     public void loginOnAction(ActionEvent actionEvent) {
         String password = logpswd.getText();
         String userName = logUname.getText();
-        UserData userData = UserData.getInstance();
-        boolean isvalidate = userData.UserLoginValidate(userName,password);
+//        UserData userData = UserData.getInstance();
+        String sql = "SELECT * FROM users WHERE username = ?";
+        try(Connection conn = DBConnection.getConnection(); ){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userName);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                storedPassword = rs.getString("password_hash");
+                System.out.println("DB "+storedPassword);
+            }
+
+        }catch (SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+          String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+        System.out.println("Password Hash "+passwordHash);
+          boolean isvalidate = BCrypt.checkpw(password, storedPassword);
         if(isvalidate){
             //goto chat interface
             boolean connected = chatClientService.connect();

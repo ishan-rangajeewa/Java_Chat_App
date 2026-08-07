@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class Message implements Serializable {
     private String sender;
     private String receiver;
-    private String massage;
+    private String message;
     private Type type;
     private LocalDateTime timestamp;
 
@@ -18,7 +18,7 @@ public class Message implements Serializable {
     public Message(String sender, String receiver, String massage, Type type, LocalDateTime timestamp) {
         this.sender = sender;
         this.receiver = receiver;
-        this.massage = massage;
+        this.message = massage;
         this.type = type;
         this.timestamp = timestamp;
     }
@@ -49,11 +49,11 @@ public class Message implements Serializable {
     }
 
     public String getMassage() {
-        return massage;
+        return message;
     }
 
     public void setMassage(String massage) {
-        this.massage = massage;
+        this.message = massage;
     }
 
     public LocalDateTime getTimestamp() {
