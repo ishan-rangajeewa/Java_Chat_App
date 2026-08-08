@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.chatapp.DataBase.DBConnection;
+import org.example.chatapp.DataBase.UserDAO;
 import org.example.chatapp.DataBase.UserData;
 import org.example.chatapp.Model.User;
 import org.mindrot.jbcrypt.BCrypt;
@@ -35,17 +36,9 @@ public class RegisterController {
         String hashed_password = BCrypt.hashpw(password, BCrypt.gensalt());
         if(!password.isEmpty() && !userName.isEmpty() && !name.isEmpty() && !re_password.isEmpty()){
             if(password.equals(re_password)){
-//                User user = new User(name,userName,password);
+              User user = new User(name,userName,password);
 //                userData.saveUser(user);
-                String sql = """
-                        INSERT INTO users(name, userName, password_hash ) 
-                        VALUES (?, ?, ?);
-                        """;
-                PreparedStatement ptmt = DBConnection.getConnection().prepareStatement(sql);
-                ptmt.setString(2, userName);
-                ptmt.setString(3, hashed_password);
-                ptmt.setString(1, name);
-                ptmt.executeUpdate();
+                UserDAO.save(user);
                 System.out.println("User created");
                 regError.setStyle("-fx-border-color: green;");
                 regError.setText("User created");

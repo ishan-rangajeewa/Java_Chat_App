@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.chatapp.DataBase.DBConnection;
+import org.example.chatapp.DataBase.UserDAO;
 import org.example.chatapp.DataBase.UserData;
 import org.example.chatapp.Model.Message;
 import org.example.chatapp.Model.User;
@@ -35,26 +36,14 @@ public class LoginController {
 
     }
 
-    public void loginOnAction(ActionEvent actionEvent) {
+    public void loginOnAction(ActionEvent actionEvent)   {
         String password = logpswd.getText();
         String userName = logUname.getText();
 //        UserData userData = UserData.getInstance();
-        String sql = "SELECT * FROM users WHERE username = ?";
-        try(Connection conn = DBConnection.getConnection(); ){
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, userName);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
-                storedPassword = rs.getString("password_hash");
-                System.out.println("DB "+storedPassword);
-            }
 
-        }catch (SQLException | ClassNotFoundException e){
-            e.printStackTrace();
-        }
           String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
         System.out.println("Password Hash "+passwordHash);
-          boolean isvalidate = BCrypt.checkpw(password, storedPassword);
+          boolean isvalidate = BCrypt.checkpw(password, UserDAO.findByUsername(userName));
         if(isvalidate){
             //goto chat interface
             boolean connected = chatClientService.connect();
